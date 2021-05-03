@@ -1,0 +1,98 @@
+type Query {
+  user: User
+  users: [User]!
+  timelines: [Timeline]!
+  locations: [Location]!
+  provinces: [Province]!
+  districts: [District]!
+  villages: [Village]!
+}
+
+#**************************8User Mutation***************************************************
+type Mutation {
+  signup(username: String!, email: String!, password: String!, contact: String!): User
+  login(email: String, password: String): AuthData
+  requestResetPassword(email: String!): Message!
+
+  createProvince(name: String!): Province
+
+  createDistrict(name: String!, provinceId: ID!): District
+
+  createVillage(name: String!, districtId: ID!): Village
+
+  createLocation(
+    name: String!, 
+    contact: String!, 
+    address: String!, 
+    villageId: ID!
+    ): Location
+
+  createTimeLine(locationId: ID!): Timeline
+}
+
+#User Information to Database
+type User {
+  id: ID!
+  username: String!
+  email: String!
+  contact: String!
+  timelines: [Timeline]!
+  locations: [Location]!
+  createdAt: Date!
+}
+
+
+#Type Timeline
+type Timeline {
+  id: ID!
+  location: Location!
+  user: User!
+  checkinAt: Date!
+}
+
+#Type Location
+type Location {
+  id: ID!
+  name: String!
+  contact: String!
+  address: String!
+  village: Village!
+  user: [User]!
+}
+
+#Type Province
+type Province {
+  id: ID!
+  name: String!
+  districts: [District]!
+}
+
+#Type District
+type District {
+  id: ID!
+  name: String!
+  villages: [Village]
+  province: Province!
+}
+
+#Type Village
+type Village {
+  id: ID!
+  name: String!
+  district: District!
+}
+
+
+#Scalar Date
+scalar Date
+
+
+#Authorization data
+type AuthData {
+  user: User
+  jwt: String
+}
+
+type Message {
+  message: String!
+}
